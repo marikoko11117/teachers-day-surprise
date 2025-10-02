@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teachers' Day Message Reveal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+        
+        /* Intro Screen Styles */
+        #introScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+        }
+        
+        .intro-title {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .intro-subtitle {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .start-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .start-btn:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+        
+        /* Main Content Styles */
+        #mainContent {
+            display: none;
+        }
+        
+        .number-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+        
+        .number-btn {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            border: none;
+            border-radius: 50%;
+            background: #ff6b6b;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .number-btn:hover {
+            background: #ff5252;
+            transform: scale(1.1);
+        }
+        
+        .number-btn.popped {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .number-btn.reinflating {
+            animation: reinflate 0.6s ease-out;
+        }
+        
+        @keyframes reinflate {
+            0% { transform: scale(0.8); background: #bdc3c7; }
+            50% { transform: scale(1.3); background: #ff6b6b; }
+            100% { transform: scale(1); background: #ff6b6b; }
+        }
+        
+        .letter {
+            font-size: 16px;
+            color: #2c3e50;
+            margin: 30px auto;
+            max-width: 600px;
+            text-align: left;
+            line-height: 1.6;
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            white-space: pre-line;
+        }
+        
+        .revealed {
+            display: block;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message-title {
+            font-size: 24px;
+            color: #e74c3c;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .unpop-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .unpop-btn:hover {
+            background: #2980b9;
+        }
+        
+        .confirm-dialog {
+            margin-top: 15px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+        }
+        
+        .confirm-btn {
+            margin: 0 5px;
+            padding: 5px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .confirm-yes {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .confirm-no {
+            background: #7f8c8d;
+            color: white;
+        }
+        
+        .message-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Special styling for balloon 11 */
+        .number-btn.special {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            border: 2px solid #ffa726;
+        }
+    </style>
+</head>
+<body>
+    <!-- Intro Screen -->
+    <div id="introScreen">
+        <h1 class="intro-title">🎈 Teachers' Day Surprise 🎈</h1>
+        <p class="intro-subtitle">A special message reveal for Ma'am Rio</p>
+        <button class="start-btn" onclick="startReveal()">Start Balloon Pop!</button>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent">
+        <h1>🎈 Teachers' Day Message Reveal 🎈</h1>
+        <p>Click the numbers as balloons are popped!</p>
+        
+        <div class="number-grid" id="numberGrid">
+            <!-- Buttons will be added here automatically -->
+        </div>
+        
+        <div id="messageArea">
+            <!-- Messages will appear here -->
+        </div>
+    </div>
+
+    <script>
+        // MESSAGES FOR EACH BALLOON
+        const messages = {
+            1: `Dear Ma'am Rio,
+Thank you so much for always guiding us and being like a second mom to us. You always give us the strength to believe in ourselves and to do our best in everything. You're a real inspiration, and I really appreciate all your advice. Being in your class makes me want to learn more and become a better person. Thank you for everything, Ma'am!`,
+
+            2: `Dear Ma'am Rio,
+Happy Teacher's Day!
+I just want to take this moment to thank you, not only for teaching lessons inside the classroom, but also for guiding us with patience and understanding. You don't just explain topics. You inspire us to believe in ourselves, to do better, and to keep moving forward even when things get hard.
+We may not always say it, but we are grateful for everything you do for us.
+Wishing you joy, health, and more inspiration to continue changing lives. You really are one of the reasons why we dream bigger.😊`,
+
+            3: `Dear Ma'am Rio.
+Happy Teachers' Day! Today is a special day to honor you, and I want to take this chance to say how thankful I am to have you as our adviser. You are more than just a teacher - you are someone who listens, guides, and understands us. Even gapasaway kami sa imo or hard to handle sa amon but you still have patience and love towards us.
+You don't just teach us lessons.. but also lessons about life, respect, and responsibility. You remind us to believe in ourselves, to work hard, and to always keep moving forward, even when things get difficult. We notice the effort you give - whether it's checking on us, helping us when we're lost, or encouraging us when we feel tired.
+As our adviser, you have become like a second parent inside the classroom. You treat us as if we are part of your family, and we can feel your genuine concern for us. That is something we will always be grateful for. On this day, we just want you to know that your hard work, sacrifices, and love for your students never go unnoticed and we value it.
+Thank you, Ma'am, for everything you do. We are so blessed to have you guiding us not only as students but as people who are learning how to face life. You will always have a special place in our hearts. We will try our best nga makakwa sang "Model Class of the Week" hehe.. Lablotss ma'am <333!
+With love and respect, Your loving student`,
+
+            4: `Hi Ma'am Rio!!! HAPPY TEACHER'S DAY!!!!! 🎉💐
+
+I just want to say thank you for being such an amazing teacher and adviser to us, Pythagoras. Even though ma sabad kami kag permi late HAHAHA you never gave up on us. Thank you for always supporting and guiding us with your patience, understanding, and care. You're more than just a teacher to us, you're a mentor, a second parent, someone we can confide in, and someone who inspires us to do better every day.
+
+We truly appreciate all your sacrifices, effort, and the love you give to us. We may not always show it, but we are deeply grateful to have you as our adviser.
+
+Happy Teacher's Day, Ma'am Rio!! With love,
+Gwen ❤️`,
+
+            5: `Dear Ma'am Rio,
+
+Happy Teacher's Day!
+
+On this special day, we just want to thank you for being more than just our adviser. You're someone who guides us, understands us, and patiently reminds us to always do our best. Even when things get tough or when we make mistakes, you never give up on us.
+
+We may not always say it, but we truly appreciate the time, effort, and sacrifices you give every day. The lessons you share with us are not only about schoolwork but also about life — lessons that help us grow and become better people.
+
+Thank you for believing in us, for motivating us when we feel tired, and for being someone we can look up to. You've made a big impact on our lives, and we are grateful to have you as our adviser.
+
+We hope today reminds you how much you are valued, respected, and loved by your students.
+
+With love and gratitude,
+
+PYTHAGORAS.`,
+
+            6: `Dear Maam Rio,
+
+Thank you for being kind to us, Thank you for being patient and for all the things you did for us. Even though I am pasaway, still i am beyond grateful. Thank you for always listening to my rants and chikas in life. Thank you for giving out advices especially If I have a problem or i am unsure of my decision. Thank you for understanding me and my classmates. Thank you for being there for us. I know being a teacher is not easy but we are thankful that you always do your best. Wishing you a good and healthy life. Again words can't express how grateful I am for being your student. I am blessed and grateful. Happy Teachers Day Maam Rio, I hope you enjoy this day. Love lots ❤️‍🩹`,
+
+            7: `Hi maam Rio,
+
+On this special day of Teachers' Day🤍, I want to take a moment to express how thankful I am for the incredible impact you have had on my life.🧸
+
+You have not only taught me the subjects you specialize in, but you have also taught me the value of hard work💪, the importance of kindness🙇🏻‍♀️, and the power of knowledge🧠. Your simple compliments in my work, has made me to strive more to be better. And those encouragement that no one has ever told me before may seem little to you, but it actually means a lot to me.🥹
+
+On this Teachers' Day, I want to say thank you. You are truly a blessing in our life, and l am so grateful to have you as my teacher. Pytha loves you, ma'am 🤍
+
+- from someone that's seating in the 3rd row🪑🤍`,
+
+            8: `Dear ma'm rio, 
+
+before I greet you, first I do just want to say thankyou first. Thankyou sa very very long pasensya mo sa'mon and thankyou for being our second mother. You're the type of teacher that is easily to approach and never failed to help. 
+
+I remember my firstday, it's so really obvious ang personality type mo as a teacher and btw this is my first encounter sng adviser nga very young. I feel so very lucky to have you as my adviser. Though the people in the room is kinda messy because of late, personality that is kinda foul, and sometimes lack of respect, but still you're here always in front of us speaking/teaching confidently.  Sometimes I think about to put myself in your place and to face 30 naughty students. I care for what you feel ma'm! Always.  HAPPY TEACHERS DAY!!!! TO THE PRETTIEST ADVISER I HAVE SO FAR!!`,
+
+            9: `Happy Teacher's Day
+
+Dear Ma'am Rio
+
+I never expected to see you not only as a teacher but also as a friend. I never thought I would grow to love you as a friend and not just as an adviser. For me, you are more than just a teacher—you are a true role model. The way you teach, explain, and make lessons easy to understand has made learning such a meaningful experience for us.
+I see you as an older sister who guides me not only in academics but also in life, even in giving advice about love and personal matters—even though there are supposed to be boundaries. You have become like a second family to me.
+I know I'm not always the best student, and at times I may be difficult to handle, but still, I feel and appreciate how much you care. When I graduate, I know I will never forget you. You will always have a place in my heart.
+I love you so much, Ma'am Rio, and I truly hope life treats you kindly—that your days are filled with more joy than hardship.`,
+
+            10: `Hello, I know, you're having a great day and having a good time ma'am and classmates but to say the silent parts out loud...
+
+We're all so very thankful for all the hardwork you pull out for us, just even the smallest jokes or challenges you give us always encourage us and push us in ways we can develop ourselves. I hope you take this celebration to reap your proudest moments with us, or biggest challenges.`,
+
+            11: `[Your message for balloon #11 will appear here]`
+        };
+        
+        // Track popped balloons
+        let poppedBalloons = new Set();
+        let currentMessageDiv = null;
+        let currentBalloonNumber = null;
+        
+        function startReveal() {
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            createBalloons();
+        }
+        
+        function createBalloons() {
+            const numberGrid = document.getElementById('numberGrid');
+            
+            // Create buttons for each message
+            Object.keys(messages).forEach(number => {
+                const button = document.createElement('button');
+                button.className = 'number-btn';
+                if (number === '11') {
+                    button.classList.add('special');
+                }
+                button.textContent = number;
+                button.onclick = () => revealMessage(number);
+                numberGrid.appendChild(button);
+            });
+        }
+        
+        function revealMessage(number) {
+            // Remove any existing message
+            if (currentMessageDiv) {
+                currentMessageDiv.remove();
+            }
+            
+            // Create and show new message
+            currentMessageDiv = document.createElement('div');
+            currentMessageDiv.className = 'letter revealed';
+            currentBalloonNumber = number;
+            
+            // Add a title
+            const title = document.createElement('div');
+            title.className = 'message-title';
+            title.textContent = `Message from Balloon #${number}`;
+            currentMessageDiv.appendChild(title);
+            
+            // Add the message content
+            const content = document.createElement('div');
+            
+            // Special handling for balloon 9 (image)
+            if (number === '9') {
+                const img = document.createElement('img');
+                img.src = 'image.png';
+                img.alt = "Happy Teacher's Day Message";
+                img.className = 'message-image';
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const fallback = document.createElement('div');
+                    fallback.innerHTML = messages[number];
+                    content.appendChild(fallback);
+                };
+                content.appendChild(img);
+            } else {
+                content.innerHTML = messages[number];
+            }
+            
+            currentMessageDiv.appendChild(content);
+            
+            // Add unpop button
+            const unpopButton = document.createElement('button');
+            unpopButton.className = 'unpop-btn';
+            unpopButton.textContent = 'Re-inflate Balloon?';
+            unpopButton.onclick = showUnpopConfirmation;
+            currentMessageDiv.appendChild(unpopButton);
+            
+            document.getElementById('messageArea').appendChild(currentMessageDiv);
+            
+            // Mark balloon as popped
+            poppedBalloons.add(number);
+            updateButtonStates();
+            
+            // Scroll to show the message
+            currentMessageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function showUnpopConfirmation() {
+            // Remove any existing confirmation
+            const existingConfirm = document.querySelector('.confirm-dialog');
+            if (existingConfirm) {
+                existingConfirm.remove();
+            }
+            
+            const confirmDialog = document.createElement('div');
+            confirmDialog.className = 'confirm-dialog';
+            confirmDialog.innerHTML = `
+                Put this balloon back? 
+                <button class="confirm-btn confirm-yes">Yes</button>
+                <button class="confirm-btn confirm-no">No</button>
+            `;
+            
+            currentMessageDiv.appendChild(confirmDialog);
+            
+            // Add event listeners
+            confirmDialog.querySelector('.confirm-yes').onclick = unpopBalloon;
+            confirmDialog.querySelector('.confirm-no').onclick = () => {
+                confirmDialog.remove();
+            };
+        }
+        
+        function unpopBalloon() {
+            if (currentBalloonNumber) {
+                poppedBalloons.delete(currentBalloonNumber);
+                
+                // Add reinflation animation
+                const buttons = document.querySelectorAll('.number-btn');
+                buttons.forEach(button => {
+                    if (button.textContent === currentBalloonNumber) {
+                        button.classList.add('reinflating');
+                        setTimeout(() => {
+                            button.classList.remove('reinflating');
+                        }, 600);
+                    }
+                });
+                
+                updateButtonStates();
+                
+                // Remove current message
+                if (currentMessageDiv) {
+                    currentMessageDiv.remove();
+                    currentMessageDiv = null;
+                }
+                
+                // Show confirmation
+                const confirmation = document.createElement('div');
+                confirmation.className = 'letter revealed';
+                confirmation.innerHTML = `
+                    <div class="message-title">Balloon #${currentBalloonNumber} Re-inflated!</div>
+                    <div style="text-align: center;">The balloon is ready to be popped again!</div>
+                `;
+                document.getElementById('messageArea').appendChild(confirmation);
+                
+                // Auto-remove confirmation after 2 seconds
+                setTimeout(() => {
+                    confirmation.remove();
+                }, 2000);
+            }
+        }
+        
+        function updateButtonStates() {
+            const buttons = document.querySelectorAll('.number-btn');
+            buttons.forEach(button => {
+                if (poppedBalloons.has(button.textContent)) {
+                    button.classList.add('popped');
+                    button.disabled = false; // Keep enabled for re-popping
+                } else {
+                    button.classList.remove('popped');
+                    button.disabled = false;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
