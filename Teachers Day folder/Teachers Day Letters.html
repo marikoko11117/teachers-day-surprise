@@ -68,6 +68,9 @@
             justify-content: center;
             gap: 10px;
             margin: 30px 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
         
         .number-btn {
@@ -80,6 +83,7 @@
             color: white;
             cursor: pointer;
             transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         .number-btn:hover {
@@ -194,6 +198,13 @@
             font-style: italic;
             margin-top: 20px;
             font-weight: bold;
+        }
+        
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: #7f8c8d;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -321,9 +332,41 @@ Thankyou for teaching us and taking care of us,no matter how upset you were,you 
 
             14: `Happy Teacher's Day, Ma'am Rio !
 
-Thank you for guiding me with so much patience and helping me improve my English, not just in grammar and vocabulary, but also in confidence. The way you encourage me to express myself and keep learning makes a big difference, and I'm truly grateful for your effort and support.`
+Thank you for guiding me with so much patience and helping me improve my English, not just in grammar and vocabulary, but also in confidence. The way you encourage me to express myself and keep learning makes a big difference, and I'm truly grateful for your effort and support.`,
+
+            15: `Happy Teacher's Day!! 
+
+Thank you for your patience and everything you do in pytha. I appreciate everything you do and I feel so lucky to have you as my adviser! BEST TEACHER EVER! PYTHA NI RIO!`,
+
+            16: `Dear ma'am rio,
+
+Happy Teacher's Day! 🌷
+
+I just want to take a moment to thank you — not just for teaching me lessons from your ppts, but for showing me how to think, how to question, and how to believe in myself. Even when I doubted it, and that belief has made more difference than you'll ever know.
+
+What makes you truly special isn't just your knowledge, but your kindness, your patience, and the way you treat each student as a human being with dreams and feelings. And I'll always carry the lessons you taught me — both inside and outside the classroom — wherever I go.
+
+Thank you for being more than a teacher — thank you for being a guide, a supporter, and a source of inspiration.
+
+From your 4'11 or 5'0 student`,
+
+            17: `Happy Teachers' Day, Ma'am Rio! 💐✨
+
+Ma'am, you're not just our advisor, you're our safe space, and like a friend to us. Thank you for always being close to us, laughing with us, guiding us, and reminding us that we're capable of more than we think. We appreciate you so much and we love you, Ma'am! HORANGHAE!!`,
+
+            18: `Dear Ma'am Rio
+
+Thank you for being the guiding light in our educational journey. You are the compass that directs us through uncharted territories, and the steady hand that steadies us when we falter. Your passion ignites our curiosity and fuels our dreams, and because of you, Happy Teachers' Day!`,
+
+            19: `HAPPY TEACHERS DAY MA'AM RIO , Thank you for your dedication, patience, and the inspiration you bring every day. Your impact goes far beyond the classroom. PALANGGA KA GD SNG PYTHA`,
+
+            20: `Dear Ma'am Rio
+
+When I first met you, i thought you were a normal teacher, but you were different, i never thought i'd meet someone as unique as you and in a way it makes me feel inspired to learn more, keep it up maam!`,
+
+            21: `A special visual message for our amazing teacher!`
         };
-        
+
         // Track popped balloons
         let poppedBalloons = new Set();
         let currentMessageDiv = null;
@@ -384,7 +427,34 @@ Thank you for guiding me with so much patience and helping me improve my English
                     content.appendChild(fallback);
                 };
                 content.appendChild(img);
-            } else {
+                
+                // Add caption for image
+                const caption = document.createElement('div');
+                caption.className = 'image-caption';
+                caption.textContent = "A special visual message for Ma'am Rio";
+                content.appendChild(caption);
+            } 
+            // Special handling for balloon 21 (image)
+            else if (number === '21') {
+                const img = document.createElement('img');
+                img.src = 'image21.png'; // Your image file
+                img.alt = "Special visual message for Ma'am Rio";
+                img.className = 'message-image';
+                img.onerror = function() {
+                    this.style.display = 'none';
+                    const fallback = document.createElement('div');
+                    fallback.innerHTML = messages[number];
+                    content.appendChild(fallback);
+                };
+                content.appendChild(img);
+                
+                // Add caption for image
+                const caption = document.createElement('div');
+                caption.className = 'image-caption';
+                caption.textContent = "A special visual tribute to our wonderful teacher!";
+                content.appendChild(caption);
+            }
+            else {
                 content.innerHTML = messages[number];
             }
             
